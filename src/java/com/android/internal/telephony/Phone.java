@@ -47,6 +47,7 @@ import android.telephony.CellInfoCdma;
 import android.telephony.CellLocation;
 import android.telephony.ClientRequestStats;
 import android.telephony.ImsiEncryptionInfo;
+import android.telephony.PhoneNumberUtils;
 import android.telephony.PhoneStateListener;
 import android.telephony.PhysicalChannelConfig;
 import android.telephony.RadioAccessFamily;
@@ -71,6 +72,7 @@ import com.android.internal.telephony.uicc.IccCardApplicationStatus.AppType;
 import com.android.internal.telephony.uicc.IccFileHandler;
 import com.android.internal.telephony.uicc.IccRecords;
 import com.android.internal.telephony.uicc.IsimRecords;
+import com.android.internal.telephony.uicc.SIMRecords;
 import com.android.internal.telephony.uicc.UiccCard;
 import com.android.internal.telephony.uicc.UiccCardApplication;
 import com.android.internal.telephony.uicc.UiccController;
@@ -2440,6 +2442,23 @@ public abstract class Phone extends Handler implements PhoneInternalInterface {
     }
 
     /**
+     * Initiate to add a participant in an IMS call.
+     * This happens asynchronously, so you cannot assume the audio path is
+     * connected (or a call index has been assigned) until PhoneStateChanged
+     * notification has occurred.
+     *
+     * @exception CallStateException if a new outgoing call is not currently
+     *                possible because no more call slots exist or a call exists
+     *                that is dialing, alerting, ringing, or waiting. Other
+     *                errors are handled asynchronously.
+     */
+    public void addParticipant(String dialString) throws CallStateException {
+        // To be overridden by GsmCdmaPhone and ImsPhone.
+        throw new CallStateException("addParticipant :: No-Op base implementation. "
+                + this);
+    }
+
+    /**
      * send burst DTMF tone, it can send the string as single character or multiple character
      * ignore if there is no active call or not valid digits string.
      * Valid digit means only includes characters ISO-LATIN characters 0-9, *, #
@@ -3675,6 +3694,10 @@ public abstract class Phone extends Handler implements PhoneInternalInterface {
         mCi.setSimCardPower(state, null);
     }
 
+    public SIMRecords getSIMRecords() {
+        return null;
+    }
+
     public void setRadioIndicationUpdateMode(int filters, int mode) {
         if (mDeviceStateMonitor != null) {
             mDeviceStateMonitor.setIndicationUpdateMode(filters, mode);
@@ -3827,5 +3850,9 @@ public abstract class Phone extends Handler implements PhoneInternalInterface {
             pw.flush();
             pw.println("++++++++++++++++++++++++++++++++");
         }
+    }
+
+    public boolean isEmergencyNumber(String address) {
+        return PhoneNumberUtils.isEmergencyNumber(getSubId(), address);
     }
 }

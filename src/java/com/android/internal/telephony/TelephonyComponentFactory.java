@@ -22,6 +22,7 @@ import android.os.Handler;
 import android.os.IDeviceIdleController;
 import android.os.Looper;
 import android.os.ServiceManager;
+import android.telephony.Rlog;
 import android.telephony.AccessNetworkConstants.TransportType;
 import android.telephony.Rlog;
 
@@ -38,7 +39,9 @@ import com.android.internal.telephony.uicc.UiccProfile;
 
 import dalvik.system.PathClassLoader;
 
+import java.io.File;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
 /**
  * This class has one-line methods to instantiate objects only. The purpose is to make code
