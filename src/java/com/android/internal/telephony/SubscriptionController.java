@@ -2270,7 +2270,7 @@ public class SubscriptionController extends ISub.Stub {
 
             if (prevSetting != DEPRECATED_SETTING) {
                 // Write previous setting into Subscription DB.
-                setSubscriptionPropertyIntoContentResolver(SubId, subscriptionProperty,
+                setSubscriptionPropertyIntoContentResolver(subId, subscriptionProperty,
                         Integer.toString(prevSetting), resolver);
                 // Write global setting value with DEPRECATED_SETTING making sure
                 // migration only happen once.
